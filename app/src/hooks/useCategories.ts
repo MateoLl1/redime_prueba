@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getCategories, createCategory } from '../api/categories';
+
+import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/categories';
 import type { Category } from '../types/Category';
 
 export const useCategories = () => {
@@ -16,14 +17,31 @@ export const useCategories = () => {
   };
 
   const addCategory = async (name: string) => {
-    const { data } = await createCategory({ name });
+    await createCategory({ name });
     fetchCategories();
-    return data;
+  };
+
+  const editCategory = async (id: number, name: string) => {
+    await updateCategory(id, { name });
+    fetchCategories();
+  };
+
+  const removeCategory = async (id: number) => {
+    await deleteCategory(id);
+    fetchCategories();
   };
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  return { categories, meta, loading, fetchCategories, addCategory };
+  return {
+    categories,
+    meta,
+    loading,
+    fetchCategories,
+    addCategory,
+    editCategory,
+    removeCategory,
+  };
 };

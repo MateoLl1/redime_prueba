@@ -1,73 +1,99 @@
-# React + TypeScript + Vite
+# 🚀 Frontend – React + TypeScript + Bootstrap
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación frontend desarrollada en:
 
-Currently, two official plugins are available:
+- React 18
+- TypeScript
+- Bootstrap 5
+- Axios
+- Hooks personalizados
+- CRUD de Materiales y Categorías
+- Modales para crear/editar
+- Paginación centrada
+- UI limpia y profesional
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 📦 Requisitos
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- Node.js 16+
+- npm o yarn
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ⚙️ Instalación
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+# o
+yarn install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ▶️ Ejecutar el proyecto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
+# o
+yarn dev
 ```
+
+Abrir en:
+
+```
+http://localhost:5173
+```
+
+---
+
+## 🔌 Conexión con el Backend
+
+El backend debe correr en:
+
+```
+http://127.0.0.1:8000/api
+```
+
+Configurado en:
+
+```
+src/api/axios.ts
+```
+
+```ts
+const api = axios.create({
+  baseURL: 'http://127.0.0.1:8000/api',
+});
+```
+
+---
+
+## 🧩 Estructura del proyecto
+
+```
+src/
+│
+├── api/            # Servicios HTTP
+├── components/     # Tablas, modales, paginación
+├── hooks/          # Lógica CRUD
+├── types/          # Tipos TS
+└── App.tsx         # UI principal
+```
+
+---
+
+## 📚 Funcionalidades
+
+- CRUD de Materiales
+- CRUD de Categorías
+- Paginación
+- Modales para crear/editar
+- Tabs para cambiar sección
+- Bootstrap UI
+
+---
+
+## 👤 Autor
+
+Mateo Ll

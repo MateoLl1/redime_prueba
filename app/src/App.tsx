@@ -3,15 +3,24 @@ import { Container, Button, Card, Row, Col } from 'react-bootstrap';
 
 import { useCategories } from './hooks/useCategories';
 import { useMaterials } from './hooks/useMaterials';
+
 import { DataTable } from './components/Table/DataTable';
 import { AppPagination } from './components/Pagination/Pagination';
+
 import CategoryModal from './components/CategoryModal/CategoryModal';
 import MaterialModal from './components/MaterialModal/MaterialModal';
 
 function App() {
   const [view, setView] = useState<'materials' | 'categories'>('materials');
 
-  const { categories, meta: catMeta, fetchCategories, addCategory } = useCategories();
+  const {
+    categories,
+    meta: catMeta,
+    fetchCategories,
+    addCategory,
+    editCategory,
+    removeCategory,
+  } = useCategories();
 
   const {
     materials,
@@ -25,12 +34,13 @@ function App() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showMaterialModal, setShowMaterialModal] = useState(false);
 
+  const [editCategoryData, setEditCategoryData] = useState<any>(null);
   const [editMaterialData, setEditMaterialData] = useState<any>(null);
 
   return (
     <Container className="mt-5">
       {/* ========================== */}
-      {/* HEADER TABS                */}
+      {/* HEADER TABS */}
       {/* ========================== */}
       <div className="d-flex gap-3 mb-4">
         <Button
@@ -49,7 +59,7 @@ function App() {
       </div>
 
       {/* ========================== */}
-      {/* MATERIALS VIEW             */}
+      {/* MATERIALS VIEW */}
       {/* ========================== */}
       {view === 'materials' && (
         <Card className="p-4 shadow-sm">
@@ -96,7 +106,7 @@ function App() {
       )}
 
       {/* ========================== */}
-      {/* CATEGORIES VIEW            */}
+      {/* CATEGORIES VIEW */}
       {/* ========================== */}
       {view === 'categories' && (
         <Card className="p-4 shadow-sm">
@@ -105,18 +115,41 @@ function App() {
               <h4>Categorías</h4>
             </Col>
             <Col className="text-end">
-              <Button variant="success" onClick={() => setShowCategoryModal(true)}>
+              <Button
+                variant="success"
+                onClick={() => {
+                  setEditCategoryData(null);
+                  setShowCategoryModal(true);
+                }}
+              >
                 + Crear Categoría
               </Button>
             </Col>
           </Row>
 
-          <DataTable columns={['ID', 'Nombre', 'Estado']}>
+          <DataTable columns={['ID', 'Nombre', 'Estado', 'Acciones']}>
             {categories.map(c => (
               <tr key={c.id}>
                 <td>{c.id}</td>
                 <td>{c.name}</td>
                 <td>{c.status}</td>
+                <td>
+                  <Button
+                    size="sm"
+                    variant="warning"
+                    className="me-2"
+                    onClick={() => {
+                      setEditCategoryData(c);
+                      setShowCategoryModal(true);
+                    }}
+                  >
+                    Editar
+                  </Button>
+
+                  <Button size="sm" variant="danger" onClick={() => removeCategory(c.id)}>
+                    Eliminar
+                  </Button>
+                </td>
               </tr>
             ))}
           </DataTable>
@@ -126,12 +159,18 @@ function App() {
       )}
 
       {/* ========================== */}
-      {/* MODALES                    */}
+      {/* MODALES */}
       {/* ========================== */}
+
       <CategoryModal
         show={showCategoryModal}
-        onHide={() => setShowCategoryModal(false)}
+        onHide={() => {
+          setShowCategoryModal(false);
+          setEditCategoryData(null);
+        }}
         onSubmit={addCategory}
+        onEdit={editCategory}
+        editData={editCategoryData}
       />
 
       <MaterialModal
