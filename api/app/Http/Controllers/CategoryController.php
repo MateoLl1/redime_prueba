@@ -8,11 +8,19 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    /**
+     * Listar categorías paginadas
+     */
     public function index()
     {
-        return CategoryResource::collection(Category::all());
+        return CategoryResource::collection(
+            Category::orderBy('id', 'desc')->paginate(10)
+        );
     }
 
+    /**
+     * Crear categoría
+     */
     public function store(Request $request)
     {
         $request->validate([
