@@ -1,162 +1,66 @@
 import { useState } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Button, Card, Row, Col } from 'react-bootstrap';
 
 import { useCategories } from './hooks/useCategories';
 import { useMaterials } from './hooks/useMaterials';
 import { DataTable } from './components/Table/DataTable';
 import { AppPagination } from './components/Pagination/Pagination';
+import CategoryModal from './components/CategoryModal/CategoryModal';
+import MaterialModal from './components/MaterialModal/MaterialModal';
 
 function App() {
+  const [view, setView] = useState<'materials' | 'categories'>('materials');
+
   const { categories, meta: catMeta, fetchCategories, addCategory } = useCategories();
 
   const {
     materials,
     meta: matMeta,
     fetchMaterials,
-    removeMaterial,
     addMaterial,
     editMaterial,
+    removeMaterial,
   } = useMaterials();
 
-  const [categoryName, setCategoryName] = useState('');
-  const [materialForm, setMaterialForm] = useState({
-    id: 0,
-    name: '',
-    description: '',
-    minimum_stock: 0,
-    category_id: 0,
-  });
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showMaterialModal, setShowMaterialModal] = useState(false);
 
-  const resetMaterialForm = () =>
-    setMaterialForm({
-      id: 0,
-      name: '',
-      description: '',
-      minimum_stock: 0,
-      category_id: 0,
-    });
+  const [editMaterialData, setEditMaterialData] = useState<any>(null);
 
   return (
-    <Container className="mt-4">
-      {/* ============================== */}
-      {/* CATEGORÍAS                     */}
-      {/* ============================== */}
-      <Row>
-        <Col>
-          <h3>Categorías</h3>
+    <Container className="mt-5">
+      {/* ========================== */}
+      {/* HEADER TABS                */}
+      {/* ========================== */}
+      <div className="d-flex gap-3 mb-4">
+        <Button
+          variant={view === 'materials' ? 'primary' : 'outline-primary'}
+          onClick={() => setView('materials')}
+        >
+          Materiales
+        </Button>
 
-          {/* Crear categoría */}
-          <div className="d-flex my-3">
-            <input
-              className="form-control me-2"
-              placeholder="Nueva categoría"
-              value={categoryName}
-              onChange={e => setCategoryName(e.target.value)}
-            />
-            <Button
-              onClick={() => {
-                if (categoryName.trim()) {
-                  addCategory(categoryName);
-                  setCategoryName('');
-                }
-              }}
-            >
-              Crear
-            </Button>
-          </div>
+        <Button
+          variant={view === 'categories' ? 'success' : 'outline-success'}
+          onClick={() => setView('categories')}
+        >
+          Categorías
+        </Button>
+      </div>
 
-          <DataTable columns={['ID', 'Nombre', 'Estado']}>
-            {categories.map(c => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.name}</td>
-                <td>{c.status}</td>
-              </tr>
-            ))}
-          </DataTable>
-
-          <AppPagination meta={catMeta} onPageChange={fetchCategories} />
-        </Col>
-      </Row>
-
-      <hr className="my-5" />
-
-      {/* ============================== */}
-      {/* MATERIALES                     */}
-      {/* ============================== */}
-      <Row>
-        <Col>
-          <h3>Materiales</h3>
-
-          {/* FORMULARIO MATERIAL */}
-          <div className="card p-3 my-3">
-            <h5>{materialForm.id === 0 ? 'Crear Material' : 'Editar Material'}</h5>
-
-            <input
-              className="form-control mb-3"
-              placeholder="Nombre"
-              value={materialForm.name}
-              onChange={e => setMaterialForm({ ...materialForm, name: e.target.value })}
-            />
-
-            <textarea
-              className="form-control mb-3"
-              placeholder="Descripción"
-              value={materialForm.description}
-              onChange={e => setMaterialForm({ ...materialForm, description: e.target.value })}
-            />
-
-            <input
-              type="number"
-              className="form-control mb-3"
-              placeholder="Stock mínimo"
-              value={materialForm.minimum_stock}
-              onChange={e =>
-                setMaterialForm({
-                  ...materialForm,
-                  minimum_stock: Number(e.target.value),
-                })
-              }
-            />
-
-            <select
-              className="form-control mb-3"
-              value={materialForm.category_id}
-              onChange={e =>
-                setMaterialForm({
-                  ...materialForm,
-                  category_id: Number(e.target.value),
-                })
-              }
-            >
-              <option value={0}>Seleccione categoría</option>
-              {categories.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-
-            <div>
-              <Button
-                className="me-2"
-                onClick={() => {
-                  if (materialForm.id === 0) {
-                    addMaterial(materialForm);
-                  } else {
-                    editMaterial(materialForm.id, materialForm);
-                  }
-                  resetMaterialForm();
-                }}
-              >
-                {materialForm.id === 0 ? 'Crear' : 'Actualizar'}
-              </Button>
-
-              <Button variant="secondary" onClick={resetMaterialForm}>
-                Cancelar
-              </Button>
-            </div>
-          </div>
+      {/* ========================== */}
+      {/* MATERIALS VIEW             */}
+      {/* ========================== */}
+      {view === 'materials' && (
+        <Card className="p-4 shadow-sm">
+          <Row className="mb-3">
+            <Col>
+              <h4>Materiales</h4>
+            </Col>
+            <Col className="text-end">
+              <Button onClick={() => setShowMaterialModal(true)}>+ Crear Material</Button>
+            </Col>
+          </Row>
 
           <DataTable columns={['ID', 'Nombre', 'Descripción', 'Stock', 'Categoría', 'Acciones']}>
             {materials.map(m => (
@@ -171,15 +75,10 @@ function App() {
                     size="sm"
                     variant="warning"
                     className="me-2"
-                    onClick={() =>
-                      setMaterialForm({
-                        id: m.id,
-                        name: m.name,
-                        description: m.description,
-                        minimum_stock: m.minimum_stock,
-                        category_id: m.category_id,
-                      })
-                    }
+                    onClick={() => {
+                      setEditMaterialData(m);
+                      setShowMaterialModal(true);
+                    }}
                   >
                     Editar
                   </Button>
@@ -193,8 +92,59 @@ function App() {
           </DataTable>
 
           <AppPagination meta={matMeta} onPageChange={fetchMaterials} />
-        </Col>
-      </Row>
+        </Card>
+      )}
+
+      {/* ========================== */}
+      {/* CATEGORIES VIEW            */}
+      {/* ========================== */}
+      {view === 'categories' && (
+        <Card className="p-4 shadow-sm">
+          <Row className="mb-3">
+            <Col>
+              <h4>Categorías</h4>
+            </Col>
+            <Col className="text-end">
+              <Button variant="success" onClick={() => setShowCategoryModal(true)}>
+                + Crear Categoría
+              </Button>
+            </Col>
+          </Row>
+
+          <DataTable columns={['ID', 'Nombre', 'Estado']}>
+            {categories.map(c => (
+              <tr key={c.id}>
+                <td>{c.id}</td>
+                <td>{c.name}</td>
+                <td>{c.status}</td>
+              </tr>
+            ))}
+          </DataTable>
+
+          <AppPagination meta={catMeta} onPageChange={fetchCategories} />
+        </Card>
+      )}
+
+      {/* ========================== */}
+      {/* MODALES                    */}
+      {/* ========================== */}
+      <CategoryModal
+        show={showCategoryModal}
+        onHide={() => setShowCategoryModal(false)}
+        onSubmit={addCategory}
+      />
+
+      <MaterialModal
+        show={showMaterialModal}
+        onHide={() => {
+          setShowMaterialModal(false);
+          setEditMaterialData(null);
+        }}
+        onSubmit={addMaterial}
+        onEdit={editMaterial}
+        categories={categories}
+        editData={editMaterialData}
+      />
     </Container>
   );
 }

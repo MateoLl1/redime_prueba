@@ -11,16 +11,18 @@ export const AppPagination = ({ meta, onPageChange }: Props) => {
   const pages = Array.from({ length: meta.last_page }, (_, i) => i + 1);
 
   return (
-    <Pagination className="mt-3">
-      {pages.map(page => (
-        <Pagination.Item
-          key={page}
-          active={page === meta.current_page}
-          onClick={() => onPageChange(page)}
-        >
-          {page}
-        </Pagination.Item>
-      ))}
-    </Pagination>
+    <div className="d-flex justify-content-center mt-3">
+      <Pagination>
+        {pages.map(page => (
+          <Pagination.Item
+            key={page}
+            active={page === meta.current_page}
+            onClick={() => onPageChange(page)}
+          >
+            {page}
+          </Pagination.Item>
+        ))}
+      </Pagination>
+    </div>
   );
 };
